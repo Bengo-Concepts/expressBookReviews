@@ -8,6 +8,8 @@ const app = express();
 
 app.use(express.json());
 
+app.use(session({secret:"fingerpint"},resave=true,saveUninitialized=true));
+
 app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
 
 app.use("/customer/auth/*", function auth(req,res,next){
