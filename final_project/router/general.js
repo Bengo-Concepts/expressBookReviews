@@ -55,11 +55,18 @@ public_users.get('/author/:author', function (req, res) {
   });
   
 
-// Get all books based on title check exercise 3
-public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
-}); //
+// Get all books based on title
+public_users.get('/title/:title', function (req, res) {
+    const title = req.params.title;
+    const booksWithTitle = Object.values(books).filter(book => book.title === title);
+
+    if (booksWithTitle.length > 0) {
+        return res.status(200).json(booksWithTitle);
+    } else {
+        return res.status(404).json({ message: "No books found with the provided title" });
+    }
+});
+
 
 // Get book review
 public_users.get('/review/:isbn', function (req, res) {
