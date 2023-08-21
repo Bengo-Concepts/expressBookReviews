@@ -55,33 +55,6 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     return res.status(200).json({ message: "Book review added/modified successfully" });
 });
 
-regd_users.put("/auth/review/:isbn", (req, res) => {
-    const isbn = req.params.isbn;
-    const review = req.body.review; 
-    const username = req.session.authorization.username;
-
-    if (!isValidISBN(isbn)) {
-        return res.status(400).json({ message: "Invalid ISBN" });
-    }
-
-    if (!review) {
-        return res.status(400).json({ message: "Review is required" });
-    }
-
-    if (!books[isbn]) {
-        return res.status(404).json({ message: "Book not found" });
-    }
-
-    if (!books[isbn].reviews) {
-        books[isbn].reviews = {};
-    }
-
-    // Add or modify the review for the book and the specific user
-    books[isbn].reviews[username] = review;
-
-    return res.status(200).json({ message: "Book review added/modified successfully" });
-});
-
 regd_users.delete("/auth/review/:isbn", (req, res) => {
     const isbn = req.params.isbn;
     const username = req.session.authorization.username;
