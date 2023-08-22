@@ -15,7 +15,31 @@ const isValidISBN = (isbn) => {
     return books.hasOwnProperty(isbn);
 };
 
+const addOrModifyReview = (isbn, review, username) => {
+    if (!books[isbn]) {
+        return false;
+    }
+
+    if (!books[isbn].reviews) {
+        books[isbn].reviews = {};
+    }
+
+    books[isbn].reviews[username] = review;
+    return true;
+};
+
+const deleteReview = (isbn, username) => {
+    if (!books[isbn] || !books[isbn].reviews || !books[isbn].reviews[username]) {
+        return false;
+    }
+
+    delete books[isbn].reviews[username];
+    return true;
+};
+
 module.exports = {
     books,
-    isValidISBN
+    isValidISBN,
+    addOrModifyReview,
+    deleteReview
 };
