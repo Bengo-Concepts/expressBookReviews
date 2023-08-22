@@ -4,7 +4,6 @@ const session = require('express-session');
 const { isValid, authenticatedUser } = require('./router/auth_users.js');
 const { regd_users } = require('./router/auth_users.js');
 const { public_users } = require('./router/general.js');
-const { isValidISBN } = require('./router/booksdb.js');
 const app = express();
 const PORT = 5000;
 
@@ -55,8 +54,8 @@ app.use("/customer/auth/*", (req, res, next) => {
 });
 
 app.use("/customer", regd_users);
-app.use("/", public_users);
+app.use("/", public_users); // Mount the public_users router
 
-app.listen(PORT, () => {
+app.listen(5000, () => {
     console.log("Server is running on port", PORT);
 });
