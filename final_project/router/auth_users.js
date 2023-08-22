@@ -1,8 +1,8 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const books = require("./booksdb.js");
+const { books, addOrModifyReview, deleteReview } = require("./booksdb.js");
 const regd_users = express.Router();
-const { isValidISBN } = require('./booksdb.js'); 
+const { isValidISBN } = require('./booksdb.js'); // Import the isValidISBN function
 
 let users = [];
 
@@ -35,24 +35,17 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     const review = req.query.review;
     const username = req.session.authorization.username;
 
-    if (!isValidISBN(isbn)) {
-        return res.status(400).json({ message: "Invalid ISBN" });
-    }
     if (!review) {
         return res.status(400).json({ message: "Review is required" });
     }
 
-    if (!books[isbn]) {
+    const result = isValidISBN(isbn) && addOrModifyReview(isbn, review, username);
+
+    if (result) {
+        return res.status(200).json({ message: "Book review added/modified successfully" });
+    } else {
         return res.status(404).json({ message: "Book not found" });
     }
-
-    if (!books[isbn].reviews) {
-        books[isbn].reviews = {};
-    }
-
-    books[isbn].reviews[username] = review;
-
-    return res.status(200).json({ message: "Book review added/modified successfully" });
 });
 
 regd_users.delete("/auth/review/:isbn", (req, res) => {
@@ -67,15 +60,14 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
         return res.status(404).json({ message: "Book not found" });
     }
 
-    if (!books[isbn].reviews || !books[isbn].reviews[username]) {
+    const result = deleteReview(isbn, username);
+
+    if (result) {
+        return res.status(200).json({ message: "Book review deleted successfully" });
+    } else {
         return res.status(404).json({ message: "Review not found for this user" });
     }
-
-    delete books[isbn].reviews[username];
-
-    return res.status(200).json({ message: "Book review deleted successfully" });
 });
-
 
 module.exports = {
     regd_users,
