@@ -1,8 +1,10 @@
+const axios = require('axios'); // getting axios adfter npm install axios 
 const express = require('express');
 const books = require("./booksdb.js");
 const { isValid, users } = require("./auth_users.js"); // Import the 'users' array from auth_users.js
 const public_users = express.Router();
 const { isValidISBN } = require('./booksdb.js');
+const { response } = require('express');
 
 public_users.post("/register", (req, res) => {
     const { username, password } = req.body;
@@ -70,6 +72,31 @@ public_users.get('/review/:isbn', (req, res) => {
     } else {
         return res.status(404).json({ message: "Book review not found" });
     }
+});
+//axios fetch function 
+const fetchbooklistfromshop = () => {
+    return new Promise((resolve, reject) => {
+        axios.get ('https://julienbengho-5000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/')
+        .then (response => {
+            resolve (response.data);
+        })
+        .catch (error => {
+            reject(error);
+
+        });
+    });
+};
+
+// axios async await
+public_users.get('/', (req, res) => {
+    fetchbooklistfromshop()
+    .then(response => {
+        return res.status(200).json(response.data);
+    })
+
+    .catch(error => {
+        return res.status(500).json({ message: "internal server error"});
+    });
 });
 
 module.exports = {
