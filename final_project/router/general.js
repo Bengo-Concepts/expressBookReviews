@@ -22,10 +22,20 @@ public_users.post("/register", (req, res) => {
     return res.status(200).json({ message: "User successfully registered. Now you can login" });
 });
 
-public_users.get('/', (req, res) => {
-    const bookList = JSON.stringify(books, null, 2);
-    return res.status(200).send(bookList);
+public_users.get('/', async (req, res) => {
+    try {
+        const bookList = await fetchbooklistfromshop(); // Use async function
+        console.log("Available Booklist fetched");
+        return res.status(200).json(bookList);
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
 });
+
+
+module.exports = {
+    public_users
+};
 
 public_users.get('/isbn/:isbn', (req, res) => {
     const isbn = req.params.isbn;
@@ -76,7 +86,7 @@ public_users.get('/review/:isbn', (req, res) => {
 //axios fetch function 
 const fetchbooklistfromshop = () => {
     return new Promise((resolve, reject) => {
-        axios.get ('https://julienbengho-5000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/')
+        axios.get ('https://julienbengho-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/')
         .then (response => {
             resolve (response.data);
         })
@@ -87,18 +97,4 @@ const fetchbooklistfromshop = () => {
     });
 };
 
-// axios async await
-public_users.get('/', (req, res) => {
-    fetchbooklistfromshop()
-    .then(response => {
-        return res.status(200).json(response.data);
-    })
 
-    .catch(error => {
-        return res.status(500).json({ message: "internal server error"});
-    });
-});
-
-module.exports = {
-    public_users
-};
