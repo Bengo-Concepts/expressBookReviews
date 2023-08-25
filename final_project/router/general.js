@@ -33,10 +33,6 @@ public_users.get('/', async (req, res) => {
 });
 
 
-module.exports = {
-    public_users
-};
-
 public_users.get('/isbn/:isbn', (req, res) => {
     const isbn = req.params.isbn;
 
@@ -86,7 +82,7 @@ public_users.get('/review/:isbn', (req, res) => {
 //axios fetch function 
 const fetchbooklistfromshop = () => {
     return new Promise((resolve, reject) => {
-        axios.get ('https://julienbengho-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/')
+        axios.get ('https://julienbengho-5500.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/')
         .then (response => {
             resolve (response.data);
         })
@@ -97,4 +93,6 @@ const fetchbooklistfromshop = () => {
     });
 };
 
-
+module.exports = {
+    public_users // Export the router
+};
